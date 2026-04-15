@@ -8,7 +8,7 @@ const router   = express.Router();
 let   pool;
 
 // Intentar conectar a la BD (si falla, el modo demo sigue funcionando)
-try { pool = require('../config/db'); } catch(e) {}
+try { pool = require('../config/db'); } catch(e) { pool = null; }
 
 // ── POST /auth/register ────────────────────────────────────
 router.post('/register', async (req, res) => {
@@ -52,13 +52,16 @@ router.post('/login', async (req, res) => {
   try {
     let user = null;
 
-    if (pool) {
-      const [rows] = await pool.query(
-        'SELECT * FROM users WHERE email = ?', [email]
-      );
-      user = rows[0];
-    }
-
+    try {
+  if (pool) {
+    const [rows] = await pool.query(
+      'SELECT * FROM users WHERE email = ?', [email]
+    );
+    user = rows[0];
+  }
+} catch(e) {
+  pool = null;
+}
     // Modo demo: si no hay BD, aceptar demo@skyline.com / demo123
     if (!pool) {
       if (email === 'demo@skyline.com' && password === 'demo123') {
