@@ -7,12 +7,13 @@ require('dotenv').config();
 
 // Crear pool de conexiones (más eficiente que una sola conexión)
 const pool = mysql.createPool({
-  host:     process.env.DB_HOST     || 'localhost',
-  user:     process.env.DB_USER     || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME     || 'skyline_airlines',
+  host: process.env.DB_HOST || process.env.MYSQLHOST || 'localhost',
+  port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),
+  user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
+  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
+  database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'skyline_airlines',
   waitForConnections: true,
-  connectionLimit: 10,   // máximo 10 conexiones simultáneas
+  connectionLimit: 10,
   queueLimit: 0
 });
 
@@ -20,17 +21,13 @@ const pool = mysql.createPool({
 async function initDB() {
   const conn = await pool.getConnection();
   try {
-    // Crear base de datos si no existe
-    await conn.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'skyline_airlines'}\``);
-    await conn.query(`USE \`${process.env.DB_NAME || 'skyline_airlines'}\``);
-
-    // Tabla de usuarios
+	// Tabla de usuarios
     await conn.query(`
       CREATE TABLE IF NOT EXISTS users (
-        id         INT AUTO_INCREMENT PRIMARY KEY,
-        name       VARCHAR(100) NOT NULL,
-        email      VARCHAR(150) NOT NULL UNIQUE,
-        password   VARCHAR(255) NOT NULL,
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(150) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);

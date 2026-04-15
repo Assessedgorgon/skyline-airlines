@@ -6,7 +6,7 @@ const express = require('express');        // Framework web
 const session = require('express-session'); // Manejo de sesiones
 const path    = require('path');            // Utilidades de rutas
 require('dotenv').config();                // Variables de entorno
-
+const pool = require('./config/db');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -64,6 +64,13 @@ app.use('/api', apiRoutes);     // /api/weather, /api/pay
 app.use('/', pageRoutes);       // /, /search, /products, /about
 
 // ── Arrancar el servidor ───────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✈  SkyLine Airlines corriendo en http://localhost:${PORT}`);
+app.listen(PORT, async () => {
+  console.log(`✈ SkyLine Airlines corriendo en puerto ${PORT}`);
+
+  try {
+    const [rows] = await pool.query('SELECT 1 AS test');
+    console.log('✅ MySQL conectado correctamente:', rows);
+  } catch (error) {
+    console.error('❌ Error conectando a MySQL:', error.message);
+  }
 });
