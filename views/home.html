@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyLine Airlines — Inicio</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      position: relative; overflow: hidden;
+      background: linear-gradient(160deg, #050d1a 0%, #0a1628 50%, #050d1a 100%);
+    }
+    .hero-bg-plane {
+      position: absolute; right: -60px; top: 50%;
+      transform: translateY(-50%) rotate(-8deg);
+      font-size: 420px; opacity: 0.03; pointer-events: none;
+      animation: floatPlane 6s ease-in-out infinite;
+    }
+    @keyframes floatPlane { 0%,100%{transform:translateY(-50%) rotate(-8deg)} 50%{transform:translateY(-54%) rotate(-6deg)} }
+
+    .hero-content { max-width: 1100px; margin: 0 auto; padding: 120px 48px 80px; width: 100%; }
+    .hero-grid { display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.3);
+      padding: 6px 16px; border-radius: 100px; font-size: 0.8rem;
+      color: var(--gold); margin-bottom: 20px; font-weight: 600;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 900; line-height: 1.1; margin-bottom: 20px;
+    }
+    .hero-sub { color: var(--muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 36px; max-width: 500px; }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Tarjeta de clima */
+    .weather-card {
+      background: rgba(15,32,64,0.8);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 20px; padding: 28px;
+      backdrop-filter: blur(10px);
+    }
+    .weather-header { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+    .weather-main { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .weather-icon { font-size: 52px; line-height: 1; }
+    .weather-temp { font-family: var(--font-display); font-size: 3rem; font-weight: 700; color: var(--white); }
+    .weather-temp sup { font-size: 1.2rem; color: var(--gold); }
+    .weather-city { color: var(--gold); font-weight: 600; font-size: 1rem; margin-bottom: 4px; }
+    .weather-desc { color: var(--muted); font-size: 0.85rem; text-transform: capitalize; }
+    .weather-details { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+    .weather-detail {
+      background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .weather-detail-label { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .weather-detail-value { font-size: 1.1rem; font-weight: 600; color: var(--white); margin-top: 4px; }
+    .weather-loading { text-align: center; padding: 40px 0; }
+    .weather-error { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 20px; }
+
+    /* Destinos destacados */
+    .destinations { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+    .dest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+    .dest-card {
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+    }
+    .dest-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .dest-card-img {
+      height: 180px; display: flex; align-items: flex-end; padding: 16px;
+      font-size: 60px; background: linear-gradient(160deg, var(--navy3), var(--navy2));
+      position: relative; overflow: hidden;
+    }
+    .dest-card-img::before {
+      content: attr(data-emoji);
+      position: absolute; right: -10px; top: -10px;
+      font-size: 100px; opacity: 0.15;
+    }
+    .dest-badge {
+      background: rgba(201,168,76,0.9); color: var(--navy);
+      padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+    }
+    .dest-card-body { padding: 20px; background: rgba(10,22,40,0.95); }
+    .dest-city { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; }
+    .dest-country { color: var(--muted); font-size: 0.82rem; margin-bottom: 12px; }
+    .dest-price { color: var(--gold); font-weight: 700; font-size: 1.1rem; }
+    .dest-price small { color: var(--muted); font-size: 0.75rem; font-weight: 400; }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .dest-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .hero-content, .destinations { padding-left: 20px; padding-right: 20px; }
+      .dest-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="/home" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      <span>SkyLine Airlines</span>
+    </a>
+    <div class="nav-links">
+      <a href="/home" class="active">🏠 <span>Inicio</span></a>
+      <a href="/search">🗺️ <span>Búsqueda</span></a>
+      <a href="/products">🎫 <span>Vuelos</span></a>
+      <a href="/about">ℹ️ <span>Acerca de</span></a>
+      <a href="/auth/logout" class="btn-logout">Salir</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg-plane">✈</div>
+    <div class="hero-content">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-badge">✈ Bienvenido a bordo</div>
+          <h1>Tu aventura comienza <span class="gold">aquí</span></h1>
+          <p class="hero-sub">
+            Descubre destinos extraordinarios, reserva con facilidad y vuela con el lujo y la seguridad que mereces con SkyLine Airlines.
+          </p>
+          <div class="hero-actions">
+            <a href="/products" class="btn btn-primary">Ver vuelos disponibles ✈</a>
+            <a href="/search" class="btn btn-outline">Explorar destinos</a>
+          </div>
+        </div>
+
+        <!-- Tarjeta de clima -->
+        <div class="weather-card">
+          <div class="weather-header">📍 Condiciones en tu ubicación</div>
+          <div id="weather-content">
+            <div class="weather-loading"><div class="spinner"></div><p class="muted" style="margin-top:12px;font-size:.85rem">Obteniendo ubicación...</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Destinos -->
+  <section class="destinations">
+    <div class="hero-badge" style="margin-bottom:12px">🌍 Destinos populares</div>
+    <div class="section-title">Vuela a donde<br>tu corazón <span class="gold">desee</span></div>
+    <div class="dest-grid">
+      <div class="dest-card">
+        <div class="dest-card-img" data-emoji="🗼">🗼 <span class="dest-badge">Popular</span></div>
+        <div class="dest-card-body">
+          <div class="dest-city">París</div>
+          <div class="dest-country">Francia · CDG</div>
+          <div class="dest-price">$12,400 MXN <small>/ persona</small></div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-card-img" data-emoji="🗽">🗽 <span class="dest-badge">Oferta</span></div>
+        <div class="dest-card-body">
+          <div class="dest-city">Nueva York</div>
+          <div class="dest-country">Estados Unidos · JFK</div>
+          <div class="dest-price">$9,800 MXN <small>/ persona</small></div>
+        </div>
+      </div>
+      <div class="dest-card">
+        <div class="dest-card-img" data-emoji="⛩️">⛩️ <span class="dest-badge">Nuevo</span></div>
+        <div class="dest-card-body">
+          <div class="dest-city">Tokio</div>
+          <div class="dest-country">Japón · HND</div>
+          <div class="dest-price">$18,500 MXN <small>/ persona</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── Geolocalización y clima ──────────────────────────────
+    const weatherIcons = {
+      '01': '☀️', '02': '⛅', '03': '☁️', '04': '☁️',
+      '09': '🌧️', '10': '🌦️', '11': '⛈️', '13': '❄️', '50': '🌫️'
+    };
+
+    function getWeatherIcon(iconCode) {
+      const prefix = iconCode.slice(0, 2);
+      return weatherIcons[prefix] || '🌡️';
+    }
+
+    function renderWeather(data) {
+      const icon = data.demo ? '☀️' : getWeatherIcon(data.weather[0].icon);
+      const html = `
+        <div class="weather-main">
+          <div class="weather-icon">${icon}</div>
+          <div>
+            <div class="weather-temp">${Math.round(data.main.temp)}<sup>°C</sup></div>
+          </div>
+        </div>
+        <div class="weather-city">📍 ${data.name}</div>
+        <div class="weather-desc">${data.weather[0].description}</div>
+        <div class="weather-details">
+          <div class="weather-detail">
+            <div class="weather-detail-label">Humedad</div>
+            <div class="weather-detail-value">${data.main.humidity}%</div>
+          </div>
+          <div class="weather-detail">
+            <div class="weather-detail-label">Viento</div>
+            <div class="weather-detail-value">${data.wind.speed} m/s</div>
+          </div>
+        </div>
+        ${data.demo ? '<div style="margin-top:12px;font-size:.75rem;color:var(--muted);text-align:center">Modo demo — configura OPENWEATHER_API_KEY</div>' : ''}
+      `;
+      document.getElementById('weather-content').innerHTML = html;
+    }
+
+    async function loadWeather(lat, lon) {
+      try {
+        const r = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
+        const d = await r.json();
+        renderWeather(d);
+      } catch {
+        document.getElementById('weather-content').innerHTML =
+          '<div class="weather-error">No se pudo cargar el clima 🌫️</div>';
+      }
+    }
+
+    // Solicitar ubicación GPS
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        pos => loadWeather(pos.coords.latitude, pos.coords.longitude),
+        ()  => loadWeather(31.6904, -106.4245) // Ciudad Juárez por defecto
+      );
+    } else {
+      loadWeather(31.6904, -106.4245);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyLine Airlines — Bienvenido</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+    /* Fondo animado con aviones */
+    .bg {
+      position: fixed; inset: 0; z-index: -1;
+      background: radial-gradient(ellipse at 20% 50%, #0f2040 0%, #050d1a 60%);
+      overflow: hidden;
+    }
+    .bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, rgba(201,168,76,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 20%, rgba(74,179,232,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 70%, rgba(201,168,76,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.15) 0%, transparent 100%);
+      background-size: 200px 200px, 300px 300px, 150px 150px, 250px 250px;
+    }
+    .runway {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      animation: runway 3s ease-in-out infinite;
+    }
+    @keyframes runway { 0%,100%{opacity:0.3} 50%{opacity:1} }
+
+    /* Contenedor split */
+    .auth-container {
+      display: flex; width: 100%; max-width: 980px;
+      min-height: 600px; border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(201,168,76,0.2);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    }
+
+    /* Panel izquierdo decorativo */
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(160deg, #0f2040 0%, #050d1a 100%);
+      padding: 56px 48px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      position: relative; overflow: hidden;
+    }
+    .auth-left::after {
+      content: '✈';
+      position: absolute; right: -20px; top: 40%;
+      font-size: 180px; opacity: 0.04;
+      transform: rotate(-20deg);
+    }
+    .brand-name {
+      font-family: var(--font-display);
+      font-size: 2.2rem; font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .brand-name span { color: var(--gold); }
+    .brand-tagline {
+      color: var(--muted); font-size: 0.95rem; margin-top: 8px;
+    }
+    .auth-left-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .auth-left h2 {
+      font-family: var(--font-display);
+      font-size: 1.9rem; margin-bottom: 16px; line-height: 1.3;
+    }
+    .auth-left p { color: var(--muted); line-height: 1.7; }
+    .features { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+    .features li { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 0.9rem; }
+    .feat-icon {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 15px;
+    }
+
+    /* Panel derecho — formularios */
+    .auth-right {
+      width: 420px; flex-shrink: 0;
+      background: rgba(10, 22, 40, 0.95);
+      padding: 48px 44px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .tab-toggle {
+      display: flex; gap: 0; margin-bottom: 36px;
+      background: rgba(255,255,255,0.05); border-radius: 10px; padding: 4px;
+    }
+    .tab-btn {
+      flex: 1; padding: 10px; border: none; background: transparent;
+      color: var(--muted); font-family: var(--font-body);
+      font-size: 0.9rem; font-weight: 500; cursor: pointer;
+      border-radius: 8px; transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold), #a87c2a);
+      color: var(--navy); font-weight: 700;
+    }
+
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    .form-title { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 6px; }
+    .form-sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 28px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--muted); margin-bottom: 6px; letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .form-group input {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--white); font-family: var(--font-body); font-size: 0.95rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-group input:focus { border-color: var(--gold); }
+    .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+
+    .btn-full { width: 100%; justify-content: center; padding: 14px; font-size: 1rem; margin-top: 8px; }
+
+    .demo-hint {
+      margin-top: 18px; padding: 12px 16px; border-radius: 8px;
+      background: rgba(74,179,232,0.08);
+      border: 1px solid rgba(74,179,232,0.2);
+      font-size: 0.8rem; color: var(--sky);
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .auth-container { flex-direction: column; margin: 16px; min-height: auto; }
+      .auth-left { padding: 32px; }
+      .auth-left-body, .auth-left::after { display: none; }
+      .auth-right { width: 100%; padding: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg"><div class="runway"></div></div>
+
+  <div class="auth-container">
+    <!-- Panel izquierdo -->
+    <div class="auth-left">
+      <div>
+        <div class="brand-name">Sky<span>Line</span></div>
+        <div class="brand-tagline">Airlines — Donde cada vuelo es una experiencia</div>
+      </div>
+      <div class="auth-left-body">
+        <h2>Vuela hacia tus <span class="gold">destinos soñados</span></h2>
+        <p>Reserva vuelos premium, accede a ofertas exclusivas y viaja con el estándar más alto de comodidad.</p>
+        <ul class="features">
+          <li><div class="feat-icon">🌍</div> Más de 80 destinos nacionales e internacionales</li>
+          <li><div class="feat-icon">⭐</div> Programa de lealtad SkyLine Gold</li>
+          <li><div class="feat-icon">📦</div> Equipaje incluido en clase Business</li>
+          <li><div class="feat-icon">🛡️</div> Seguro de viaje complementario</li>
+        </ul>
+      </div>
+      <div class="muted" style="font-size:0.78rem;">© 2024 SkyLine Airlines. Todos los derechos reservados.</div>
+    </div>
+
+    <!-- Panel derecho -->
+    <div class="auth-right">
+      <div class="tab-toggle">
+        <button class="tab-btn active" onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="tab-btn" onclick="switchTab('register')">Registrarse</button>
+      </div>
+
+      <!-- Formulario login -->
+      <div class="form-panel active" id="panel-login">
+        <div class="form-title">Bienvenido de vuelta</div>
+        <div class="form-sub">Ingresa tus credenciales para continuar</div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="login-email" placeholder="tu@correo.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="login-pass" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()">Ingresar ✈</button>
+        <div class="demo-hint">
+          Demo: <strong>demo@skyline.com</strong> / <strong>demo123</strong>
+        </div>
+      </div>
+
+      <!-- Formulario registro -->
+      <div class="form-panel" id="panel-register">
+        <div class="form-title">Crea tu cuenta</div>
+        <div class="form-sub">Únete a miles de viajeros SkyLine</div>
+        <div class="form-group">
+          <label>Nombre completo</label>
+          <input type="text" id="reg-name" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="reg-email" placeholder="tu@correo.com">
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doRegister()">Crear cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // Cambiar entre pestañas login/registro
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+      document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+      document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+    }
+
+    // Toast de notificaciones
+    function toast(msg, type = 'info') {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = `show ${type}`;
+      setTimeout(() => { el.className = ''; }, 3500);
+    }
+
+    // Login
+    async function doLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass  = document.getElementById('login-pass').value;
+      if (!email || !pass) return toast('Completa todos los campos', 'error');
+
+      const r = await fetch('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password: pass })
+      });
+      const d = await r.json();
+      if (d.ok) { toast(d.msg, 'success'); setTimeout(() => location.href = '/home', 800); }
+      else toast(d.msg, 'error');
+    }
+
+    // Registro
+    async function doRegister() {
+      const name  = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const pass  = document.getElementById('reg-pass').value;
+      if (!name || !email || !pass) return toast('Completa todos los campos', 'error');
+      if (pass.length < 6) return toast('La contraseña debe tener al menos 6 caracteres', 'error');
+
+      const r = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password: pass })
+      });
+      const d = await r.json();
+      if (d.ok) { toast(d.msg + ' — Ahora inicia sesión', 'success'); switchTab('login'); }
+      else toast(d.msg, 'error');
+    }
+
+    // Enter para enviar formularios
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (document.getElementById('panel-login').classList.contains('active')) doLogin();
+        else doRegister();
+      }
+    });
+  </script>
+</body>
+</html>

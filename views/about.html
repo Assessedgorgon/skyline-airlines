@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyLine Airlines — Acerca de</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .about-hero {
+      padding: 130px 48px 80px;
+      background: linear-gradient(160deg, #050d1a 0%, #0a1628 60%, #050d1a 100%);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .about-hero::after {
+      content: '✈'; position: absolute; right: 5%; top: 30%;
+      font-size: 300px; opacity: 0.03; transform: rotate(-15deg);
+    }
+    .about-hero p {
+      color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 16px auto 0; line-height: 1.8;
+    }
+
+    /* Estadísticas */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      max-width: 900px; margin: -40px auto 0; padding: 0 48px;
+      position: relative; z-index: 10;
+    }
+    .stat {
+      background: rgba(15,32,64,0.9);
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 28px 20px; text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    .stat:first-child { border-radius: 14px 0 0 14px; }
+    .stat:last-child  { border-radius: 0 14px 14px 0; }
+    .stat-value { font-family: var(--font-display); font-size: 2.2rem; font-weight: 900; color: var(--gold); }
+    .stat-label { color: var(--muted); font-size: 0.82rem; margin-top: 6px; }
+
+    /* Secciones */
+    .section { max-width: 1100px; margin: 0 auto; padding: 80px 48px; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .about-text h2 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 20px; }
+    .about-text p  { color: var(--muted); line-height: 1.8; margin-bottom: 14px; }
+
+    .values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+    .value-item {
+      padding: 18px; border-radius: 12px;
+      background: rgba(201,168,76,0.05); border: 1px solid rgba(201,168,76,0.15);
+    }
+    .value-icon { font-size: 24px; margin-bottom: 8px; }
+    .value-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+    .value-desc { color: var(--muted); font-size: 0.8rem; }
+
+    /* Decorativo de avión */
+    .plane-visual {
+      background: linear-gradient(135deg, var(--navy3), var(--navy2));
+      border-radius: 20px; padding: 48px; text-align: center;
+      border: 1px solid rgba(201,168,76,0.15);
+      position: relative; overflow: hidden;
+    }
+    .plane-visual::before {
+      content: '✈'; position: absolute; font-size: 200px;
+      opacity: 0.06; top: -20px; right: -20px; transform: rotate(-10deg);
+    }
+    .plane-emoji { font-size: 80px; display: block; margin-bottom: 16px; }
+    .plane-visual h3 { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 8px; }
+    .plane-visual p { color: var(--muted); font-size: 0.85rem; }
+
+    /* Equipo */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+    .team-card {
+      background: rgba(15,32,64,0.6);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 28px; text-align: center;
+      transition: transform 0.25s;
+    }
+    .team-card:hover { transform: translateY(-4px); }
+    .team-avatar { font-size: 48px; margin-bottom: 12px; }
+    .team-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+    .team-role { color: var(--gold); font-size: 0.82rem; font-weight: 500; margin: 4px 0 8px; }
+    .team-bio { color: var(--muted); font-size: 0.8rem; line-height: 1.6; }
+
+    /* Contacto */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    .contact-info { display: flex; flex-direction: column; gap: 20px; }
+    .contact-item { display: flex; gap: 16px; align-items: flex-start; }
+    .contact-icon {
+      width: 44px; height: 44px; flex-shrink: 0; border-radius: 10px;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
+    }
+    .contact-label { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .contact-value { font-weight: 500; }
+
+    /* Mapa */
+    #about-map, #about-map-placeholder {
+      border-radius: 16px; overflow: hidden; height: 320px;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    #about-map-placeholder {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(15,32,64,0.5); gap: 12px; color: var(--muted);
+    }
+    #about-map-placeholder .big-icon { font-size: 48px; opacity: 0.4; }
+    #about-map-placeholder p { font-size: 0.82rem; text-align: center; max-width: 220px; }
+
+    @media (max-width: 900px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); margin-top: 40px; }
+      .stat:nth-child(2) { border-radius: 0 14px 0 0; }
+      .stat:nth-child(3) { border-radius: 0 0 0 14px; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .about-hero, .section { padding-left: 20px; padding-right: 20px; }
+      .stats-row { padding: 0 20px; }
+      .team-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/home" class="nav-logo">
+      <div class="nav-logo-icon">✈</div>
+      <span>SkyLine Airlines</span>
+    </a>
+    <div class="nav-links">
+      <a href="/home">🏠 <span>Inicio</span></a>
+      <a href="/search">🗺️ <span>Búsqueda</span></a>
+      <a href="/products">🎫 <span>Vuelos</span></a>
+      <a href="/about" class="active">ℹ️ <span>Acerca de</span></a>
+      <a href="/auth/logout" class="btn-logout">Salir</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="about-hero">
+    <div class="hero-badge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:6px 16px;border-radius:100px;font-size:.8rem;color:var(--gold);margin-bottom:16px;font-weight:600">ℹ️ Nuestra historia</div>
+    <div class="section-title">Quiénes <span class="gold">somos</span></div>
+    <p>SkyLine Airlines es una aerolínea premium fundada en 2010 con la visión de transformar la experiencia de viaje en México y el mundo. Conectamos sueños con destinos.</p>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="stats-row">
+    <div class="stat"><div class="stat-value">14+</div><div class="stat-label">Años de experiencia</div></div>
+    <div class="stat"><div class="stat-value">80+</div><div class="stat-label">Destinos globales</div></div>
+    <div class="stat"><div class="stat-value">2.4M</div><div class="stat-label">Pasajeros al año</div></div>
+    <div class="stat"><div class="stat-value">98.7%</div><div class="stat-label">Puntualidad</div></div>
+  </div>
+
+  <!-- Misión y valores -->
+  <section class="section">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>Nuestra <span class="gold">misión</span></h2>
+        <p>En SkyLine Airlines creemos que volar debe ser una experiencia extraordinaria, no solo un medio de transporte. Nos dedicamos a ofrecer el más alto estándar de servicio en cada vuelo, desde el despegue hasta el aterrizaje.</p>
+        <p>Nuestro compromiso es con la seguridad, la puntualidad y la satisfacción de cada pasajero. Cada miembro de nuestro equipo trabaja con pasión para que tu viaje sea memorable.</p>
+        <div class="values-grid">
+          <div class="value-item"><div class="value-icon">🛡️</div><div class="value-title">Seguridad primero</div><div class="value-desc">Los más altos estándares de la industria</div></div>
+          <div class="value-item"><div class="value-icon">⭐</div><div class="value-title">Excelencia</div><div class="value-desc">Servicio de clase mundial en cada vuelo</div></div>
+          <div class="value-item"><div class="value-icon">🌱</div><div class="value-title">Sustentabilidad</div><div class="value-desc">Comprometidos con el medio ambiente</div></div>
+          <div class="value-item"><div class="value-icon">🤝</div><div class="value-title">Inclusión</div><div class="value-desc">Accesible para todos los viajeros</div></div>
+        </div>
+      </div>
+      <div class="plane-visual">
+        <span class="plane-emoji">✈️</span>
+        <h3>Flota moderna</h3>
+        <p>Operamos con los aviones más modernos y eficientes: Boeing 737 MAX, Airbus A320neo, Boeing 787 Dreamliner y Airbus A380.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipo -->
+  <section class="section" style="padding-top:0">
+    <div class="hero-badge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:6px 16px;border-radius:100px;font-size:.8rem;color:var(--gold);margin-bottom:16px;font-weight:600">👥 Nuestro equipo directivo</div>
+    <div class="section-title">Las personas detrás de <span class="gold">SkyLine</span></div>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar">👨‍✈️</div><div class="team-name">Roberto Vega Molina</div><div class="team-role">CEO & Fundador</div><div class="team-bio">Más de 25 años en la industria de la aviación comercial. Piloto certificado y visionario empresarial.</div></div>
+      <div class="team-card"><div class="team-avatar">👩‍💼</div><div class="team-name">Claudia Ibarra Torres</div><div class="team-role">Directora de Operaciones</div><div class="team-bio">Especialista en logística aérea, responsable de la eficiencia operativa de nuestra flota global.</div></div>
+      <div class="team-card"><div class="team-avatar">👨‍🔧</div><div class="team-name">Ing. Marco Salinas</div><div class="team-role">Director de Mantenimiento</div><div class="team-bio">Certificado por la FAA y DGAC. Garantiza los más altos estándares de seguridad en toda la flota.</div></div>
+    </div>
+  </section>
+
+  <!-- Contacto y mapa -->
+  <section class="section" style="padding-top:0">
+    <div class="hero-badge" style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);padding:6px 16px;border-radius:100px;font-size:.8rem;color:var(--gold);margin-bottom:16px;font-weight:600">📞 Contáctanos</div>
+    <div class="section-title">Estamos aquí para <span class="gold">ayudarte</span></div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div><div class="contact-label">Oficinas centrales</div><div class="contact-value">Paseo Triunfo de la República 3185<br>Col. Partido Iglesias, Ciudad Juárez<br>Chihuahua, México 32528</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div><div class="contact-label">Teléfono</div><div class="contact-value">+52 (656) 123-4567</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div><div class="contact-label">Correo</div><div class="contact-value">contacto@skylineairlines.mx<br>reservas@skylineairlines.mx</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🕐</div>
+          <div><div class="contact-label">Horario de atención</div><div class="contact-value">Lun – Vie: 8:00 – 20:00<br>Sáb – Dom: 9:00 – 15:00</div></div>
+        </div>
+      </div>
+
+      <!-- Mapa de la empresa -->
+      <div>
+        <div id="about-map"></div>
+        <div id="about-map-placeholder" style="display:none">
+          <div class="big-icon">📍</div>
+          <p>Configura GOOGLE_MAPS_API_KEY para ver el mapa</p>
+          <p class="muted" style="font-size:.78rem">Paseo Triunfo de la República 3185, Ciudad Juárez</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Coordenadas de la "sede" de SkyLine (Ciudad Juárez)
+    const OFFICE_LAT = 31.7326;
+    const OFFICE_LNG = -106.4753;
+
+    function initAboutMap() {
+      const mapEl = document.getElementById('about-map');
+      const map = new google.maps.Map(mapEl, {
+        center: { lat: OFFICE_LAT, lng: OFFICE_LNG }, zoom: 15,
+        styles: [
+          { elementType: 'geometry', stylers: [{ color: '#0a1628' }] },
+          { elementType: 'labels.text.fill', stylers: [{ color: '#c9a84c' }] },
+          { elementType: 'labels.text.stroke', stylers: [{ color: '#050d1a' }] },
+          { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#0f2040' }] },
+          { featureType: 'water', stylers: [{ color: '#050d1a' }] }
+        ]
+      });
+
+      new google.maps.Marker({
+        position: { lat: OFFICE_LAT, lng: OFFICE_LNG },
+        map, title: 'SkyLine Airlines — Oficinas',
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 12, fillColor: '#c9a84c', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 }
+      });
+    }
+
+    // Cargar mapa solo si hay API key
+    (function() {
+      const key = '%%GOOGLE_MAPS_API_KEY%%';
+      if (key && !key.includes('%%') && !key.includes('tu_api')) {
+        const s = document.createElement('script');
+        s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initAboutMap`;
+        s.async = true;
+        document.head.appendChild(s);
+      } else {
+        document.getElementById('about-map').style.display = 'none';
+        document.getElementById('about-map-placeholder').style.display = 'flex';
+      }
+    })();
+  </script>
+</body>
+</html>
